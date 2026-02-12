@@ -1,0 +1,17 @@
+provider "aws" {
+region = "us-east-2"
+}
+
+resource "aws_instance" "server1"{
+tags ={
+Name= "Newserver"
+}
+
+ami = "ami-06e3c045d79fd65d9"
+instanc_type = "t3.micro"
+}
+
+
+
+# terraform import aws_instance.server1 i-0a6739f24f48ad4b2
+basic instance details mention chesthe chalu
