@@ -21,7 +21,7 @@ variable "amid" {
 
 variable "type" {
   type    = string
-  default = "c7i-flex.large"
+  default = "t3.micro"
 }
 
 variable "keyname" {
