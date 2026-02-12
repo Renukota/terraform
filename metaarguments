@@ -1,0 +1,21 @@
+
+resource "aws_instance" "myServer" {
+  tags = {
+    Name   = var.name
+    env    = var.env
+    client = var.client
+  }
+
+  ami           = var.amid
+  instance_type = var.type
+  key_name      = var.keyname
+  count = "2"
+  lifecycle{
+  create_before_destroy = true
+  prevent_destroy = true
+  ignore_changes = [tags]
+}
+  root_block_device {
+    volume_size = var.size
+  }
+}
