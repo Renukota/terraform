@@ -1,0 +1,52 @@
+provider "aws" {
+region = "us-east-2"
+}
+
+resource "aws_key_pair" "mykey"{
+ key_name = "renu"
+ public_key = file("/root/.ssh/id_rsa.pub")
+}
+
+
+resource "aws_instance" "serverB" {
+tags = {
+Name = var.name
+}
+
+ami = var.amid
+instance_type= var.type
+ key_name = aws_key_pair.mykey.key_name
+ vpc_security_group_ids = [aws_security_group.mysg.id]
+ provisioner "remote-exec" {
+   connection {
+     type = "ssh"
+     user = "ec2-user"
+     private_key = file("/root/.ssh/id_rsa")
+     host = self.public_ip
+   }
+   inline = [
+          "sudo yum update -y",
+          "sudo yum install httpd -y",
+          "sudo systemctl start httpd"
+        ]
+ }
+
+}
+
+
+variable "name" {
+  description = "name of the server"
+  type        = string
+  default     = "serverB"
+  }
+
+
+variable "amid" {
+  type    = string
+  default = "ami-05efc83cb5512477c"
+}
+
+variable "type" {
+  type    = string
+  default = "t3.micro"
+}
