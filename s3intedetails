@@ -1,0 +1,11 @@
+s3 integration ki kavalsina plugins
+S3 publisher plugin
+Artifact Manager on S3 plugin
+
+systems lo s3 ni integrate cheyali akada
+access key eyali iam user create chesi
+
+
+s3Upload: Publish artifacts to S3 Bucket --> pipeline syntax ki use chesthamu
+pipeline syntax create cheseapdu konni details kavali
+-->s3 profile , source, destination(bucketname) , bucket region, No upload on build failure
