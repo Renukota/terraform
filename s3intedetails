@@ -9,3 +9,12 @@ access key eyali iam user create chesi
 s3Upload: Publish artifacts to S3 Bucket --> pipeline syntax ki use chesthamu
 pipeline syntax create cheseapdu konni details kavali
 -->s3 profile , source, destination(bucketname) , bucket region, No upload on build failure
+
+
+Static webApplication Hosting
+--> ekda acls , public block access chuskoni index.html ni upload chei
+--> and static websidte ni host cheseki use chetshamu
+-->Properties lo untadhi e option
+
+Cross Regional replication
+-> telusuko baga
