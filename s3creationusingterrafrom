@@ -1,0 +1,11 @@
+resource "aws_s3_bucket" "myBucket" {
+  bucket = "kat-kops-2026"
+  region = "us-east-2"
+}
+
+resource "aws_s3_bucket_versioning" "bucketVersioning" {
+  bucket = aws_s3_bucket.myBucket.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
