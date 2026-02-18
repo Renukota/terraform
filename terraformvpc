@@ -1,0 +1,118 @@
+provider "aws" {
+  region = "us-east-2"
+}
+
+resource "aws_vpc" "main" {
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+
+  tags = {
+    Name = "main-vpc"
+  }
+}
+
+resource "aws_subnet" "public_a_0" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.0.0/24"
+  availability_zone       = "us-east-2-a"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "Public-a-1"
+    Type = "Public"
+  }
+}
+
+resource "aws_subnet" "private_a_1" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.1.0/24"
+  availability_zone       = "us-east-2-a"
+  map_public_ip_on_launch = false
+
+  tags = {
+    Name = "private-a-1"
+    Type = "private"
+  }
+}
+
+
+# Internet Gateway for public subnets
+resource "aws_internet_gateway" "main" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = "main-igw"
+  }
+}
+
+# Route tables
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = "public-route-table"
+  }
+}
+
+
+# Public route to Internet Gateway
+resource "aws_route" "public_internet_gateway" {
+  route_table_id         = aws_route_table.public.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.main.id
+}
+
+# Custom routes for public route table
+
+
+# Associate public subnets with the public route table
+resource "aws_route_table_association" "public_a_0" {
+  subnet_id      = aws_subnet.public_a_0.id
+  route_table_id = aws_route_table.public.id
+}
+
+
+# Private route tables - one per AZ for NAT Gateway configuration
+resource "aws_route_table" "private_a" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = "private-route-table-a"
+  }
+}
+
+# Custom routes for private route tables
+
+
+# Associate private subnets with their respective AZ route tables
+resource "aws_route_table_association" "private_a_0" {
+  subnet_id      = aws_subnet.private_a_0.id
+  route_table_id = aws_route_table.private_a.id
+}
+
+
+# NAT Gateway configuration
+
+
+resource "aws_nat_gateway" "nat_a" {
+  allocation_id = null
+  subnet_id     = aws_subnet.public_a_0.id
+
+  tags = {
+    Name = "nat-gateway-a"
+  }
+
+  depends_on = [aws_internet_gateway.main]
+}
+
+# Routes from private subnets to NAT Gateway
+resource "aws_route" "private_nat_gateway_a" {
+  route_table_id         = aws_route_table.private_a.id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.nat_a.id
+}
+
+
+
+
