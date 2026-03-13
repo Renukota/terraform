@@ -24,22 +24,12 @@ variable "port" {
   default = [22, 8080, 3306, 80]
 }
 
-
-
-
-
-
-
-
-
+_______________________________________________________________________________________________________________________
 
 provider "vault"{
   address = "http://13.59.228.15:8200/"
   token = var.mytoken
 }
-
-
-
 
 
 provider "aws" {
@@ -56,12 +46,41 @@ variable "mytoken" {
   sensitive = true
 }
 
-
-
-
-
-
-
-
-
 vault server -dev -dev-listen-address="0.0.0.0:8200"
+
+vault is also managed by terraform hashicrop - install cheyali
+https://developer.hashicorp.com/vault/install#linux
+install chesaka aah pyna command execute cheyali , 8200 is default port of the vault 
+
+Modules ki chatgpt refer chei
+
+Dynamic module
+
+resource "aws_security_group" "example" {
+  name = "dynamic-sg"
+
+  dynamic "ingress" {
+    for_each = var.ingress_ports
+    content {
+      from_port   = ingress.value
+      to_port     = ingress.value
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+variable "ingress_ports" {
+  default = [22, 80, 443]
+}
+
+
+______________________________________________________________________________________________
+Terrafromer ki install chesedhi allsetup repo lo undi check and also commands kuda akde unnai
