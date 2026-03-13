@@ -1,0 +1,67 @@
+resource "aws_security_group" "mysg" {
+  name = "mysg1"
+
+  dynamic "ingress" {
+    for_each = var.port
+    content {
+      to_port    = ingress.value
+      from_port  = ingress.value
+      protocol   = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  }
+  egress {
+    to_port    = 0
+    from_port  = 0
+    protocol   = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+}
+
+variable "port" {
+  type    = list(number)
+  default = [22, 8080, 3306, 80]
+}
+
+
+
+
+
+
+
+
+
+
+provider "vault"{
+  address = "http://13.59.228.15:8200/"
+  token = var.mytoken
+}
+
+
+
+
+
+provider "aws" {
+  region = "us-east-2"
+  access_key = data.vault_generic_secret.aws.data["access_key"]
+  secret_key  = data.vault_generic_secret.aws.data["secret_key"]
+}
+data "vault_generic_secret" "aws" {
+  path= "secret/mysecret"
+}
+
+variable "mytoken" {
+  type = string
+  sensitive = true
+}
+
+
+
+
+
+
+
+
+
+vault server -dev -dev-listen-address="0.0.0.0:8200"
